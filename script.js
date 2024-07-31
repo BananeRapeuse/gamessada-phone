@@ -51,16 +51,38 @@ function saveDrawing() {
     clearCanvas();
 }
 
-function setDevice(device) {
+function selectDeviceType(type) {
     document.getElementById('deviceSelection').style.display = 'none';
-    document.getElementById('game').style.display = 'flex';
-    if (device === 'mobile') {
-        canvas.width = 220;
-        canvas.height = 220;
+    document.getElementById('resolutionSelection').style.display = 'block';
+    if (type === 'computer') {
+        document.getElementById('computerOptions').style.display = 'block';
+        document.getElementById('mobileOptions').style.display = 'none';
     } else {
-        canvas.width = 1200;
-        canvas.height = 1200;
+        document.getElementById('computerOptions').style.display = 'none';
+        document.getElementById('mobileOptions').style.display = 'block';
     }
+}
+
+function selectMobileType(type) {
+    document.getElementById('mobileOptions').style.display = 'none';
+    if (type === 'apple') {
+        document.getElementById('appleOptions').style.display = 'block';
+        document.getElementById('otherMobileOptions').style.display = 'none';
+    } else {
+        document.getElementById('appleOptions').style.display = 'none';
+        document.getElementById('otherMobileOptions').style.display = 'block';
+    }
+}
+
+function setResolution(width, height) {
+    document.getElementById('resolutionSelection').style.display = 'none';
+    document.getElementById('game').style.display = 'flex';
+
+    document.body.style.width = `${width}px`;
+    document.body.style.height = `${height}px`;
+
+    canvas.width = width * 0.9;
+    canvas.height = height * 0.8;
     canvas.style.width = `${canvas.width}px`;
     canvas.style.height = `${canvas.height}px`;
 }
