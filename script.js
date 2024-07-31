@@ -27,44 +27,32 @@ function updateResolution(resolution) {
             height = window.innerHeight;
             break;
     }
-    // Ajuste la taille du canvas en fonction de la résolution
-    document.getElementById('canvas').width = width;
-    document.getElementById('canvas').height = height;
-    // Redessiner l'intégralité du contenu du canvas
-    redrawCanvas();
+    const canvas = document.getElementById('canvas');
+    canvas.width = width;
+    canvas.height = height;
+    redrawCanvas(); // Redessiner l'intégralité du contenu du canvas
 }
 
 // Fonction pour gérer la sélection des couleurs
 function updateColorSelection(position, color) {
     const canvas = document.getElementById('canvas');
     const ctx = canvas.getContext('2d');
-    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-    const data = imageData.data;
-
+    ctx.fillStyle = color;
+    
     switch (position) {
         case 'haut':
-            // Remplir la partie supérieure du canvas avec la couleur sélectionnée
-            ctx.fillStyle = color;
             ctx.fillRect(0, 0, canvas.width, canvas.height / 2);
             break;
         case 'bas':
-            // Remplir la partie inférieure du canvas avec la couleur sélectionnée
-            ctx.fillStyle = color;
             ctx.fillRect(0, canvas.height / 2, canvas.width, canvas.height / 2);
             break;
         case 'gauche':
-            // Remplir la partie gauche du canvas avec la couleur sélectionnée
-            ctx.fillStyle = color;
             ctx.fillRect(0, 0, canvas.width / 2, canvas.height);
             break;
         case 'droite':
-            // Remplir la partie droite du canvas avec la couleur sélectionnée
-            ctx.fillStyle = color;
             ctx.fillRect(canvas.width / 2, 0, canvas.width / 2, canvas.height);
             break;
     }
-    // Redessiner le canvas après la modification des couleurs
-    redrawCanvas();
 }
 
 // Fonction pour l'outil seau
@@ -73,7 +61,6 @@ function fillBucket(x, y, color) {
     const ctx = canvas.getContext('2d');
     const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
     const data = imageData.data;
-    const targetColor = getPixelColor(x, y);
 
     function getPixelColor(x, y) {
         const index = (y * canvas.width + x) * 4;
@@ -88,9 +75,8 @@ function fillBucket(x, y, color) {
         data[index + 3] = color[3];
     }
 
-    function floodFill(x, y) {
+    function floodFill(x, y, targetColor, newColor) {
         const stack = [[x, y]];
-        const newColor = color;
 
         while (stack.length) {
             const [x, y] = stack.pop();
@@ -113,29 +99,34 @@ function fillBucket(x, y, color) {
                color1[3] === color2[3];
     }
 
-    floodFill(x, y);
+    const targetColor = getPixelColor(x, y);
+    floodFill(x, y, targetColor, color);
     ctx.putImageData(imageData, 0, 0);
 }
 
 // Fonction pour redessiner le canvas après modification
 function redrawCanvas() {
-    // Code pour redessiner le canvas si nécessaire
+    // Redessiner le canvas si nécessaire
 }
 
 // Fonction principale de gestion des outils
 function handleToolSelection(tool) {
+    const canvas = document.getElementById('canvas');
+    canvas.removeEventListener('click', onCanvasClick);
+
     switch (tool) {
         case 'seau':
-            // Activer l'outil seau
-            canvas.addEventListener('click', function(event) {
-                const rect = canvas.getBoundingClientRect();
-                const x = Math.floor((event.clientX - rect.left) / (rect.right - rect.left) * canvas.width);
-                const y = Math.floor((event.clientY - rect.top) / (rect.bottom - rect.top) * canvas.height);
-                const color = [255, 0, 0, 255]; // Couleur par défaut ou à sélectionner
-                fillBucket(x, y, color);
-            });
+            canvas.addEventListener('click', onCanvasClick);
             break;
         // Autres outils à ajouter ici
+    }
+
+    function onCanvasClick(event) {
+        const rect = canvas.getBoundingClientRect();
+        const x = Math.floor((event.clientX - rect.left) / (rect.right - rect.left) * canvas.width);
+        const y = Math.floor((event.clientY - rect.top) / (rect.bottom - rect.top) * canvas.height);
+        const color = [255, 0, 0, 255]; // Couleur par défaut ou à sélectionner
+        fillBucket(x, y, color);
     }
 }
 
@@ -149,7 +140,7 @@ function initialize() {
     // Sélection des couleurs
     document.getElementById('color-position-select').addEventListener('change', function(event) {
         const position = event.target.value;
-        const color = [0, 255, 0, 255]; // Couleur par défaut ou à sélectionner
+        const color = '#00ff00'; // Couleur par défaut ou à sélectionner en hexadécimal
         updateColorSelection(position, color);
     });
 
