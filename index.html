@@ -8,7 +8,11 @@
 </head>
 <body>
     <h1>GAMESSADA PHONE</h1>
-    <div id="game">
+    <div id="deviceSelection">
+        <button onclick="setDevice('pc')">PC</button>
+        <button onclick="setDevice('mobile')">Mobile</button>
+    </div>
+    <div id="game" style="display:none;">
         <canvas id="drawingCanvas" width="800" height="600"></canvas>
         <div id="controls">
             <button onclick="clearCanvas()">Effacer</button>
