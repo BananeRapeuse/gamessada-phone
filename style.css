@@ -1,43 +1,35 @@
 body {
     font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    min-height: 100vh;
+    height: 100vh;
+    margin: 0;
     background-color: #f0f0f0;
 }
 
-header {
+#deviceSelection {
     margin-bottom: 20px;
 }
 
-h1 {
-    font-size: 2rem;
-    color: #333;
-}
-
-main {
+#game {
     display: flex;
     flex-direction: column;
     align-items: center;
 }
 
-.controls {
+canvas {
+    border: 1px solid #000;
+    margin-bottom: 10px;
+}
+
+#controls {
     margin-bottom: 20px;
 }
 
-label {
-    margin-right: 10px;
-}
-
-select {
-    margin-right: 20px;
-}
-
-canvas {
-    border: 1px solid #ccc;
-    background-color: #fff;
+#savedDrawings {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
 }
