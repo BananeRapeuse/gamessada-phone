@@ -9,7 +9,7 @@ body {
     background-color: #f0f0f0;
 }
 
-#deviceSelection {
+#deviceSelection, #resolutionSelection, #game {
     margin-bottom: 20px;
 }
 
