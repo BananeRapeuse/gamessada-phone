@@ -3,16 +3,23 @@ const ctx = canvas.getContext('2d');
 let drawing = false;
 
 canvas.addEventListener('mousedown', () => drawing = true);
-canvas.addEventListener('mouseup', () => drawing = false);
+canvas.addEventListener('mouseup', () => {
+    drawing = false;
+    ctx.beginPath();
+});
 canvas.addEventListener('mousemove', draw);
 
 canvas.addEventListener('touchstart', (e) => {
     drawing = true;
     const touch = e.touches[0];
-    draw(touch);
+    ctx.moveTo(touch.clientX - canvas.offsetLeft, touch.clientY - canvas.offsetTop);
 });
-canvas.addEventListener('touchend', () => drawing = false);
+canvas.addEventListener('touchend', () => {
+    drawing = false;
+    ctx.beginPath();
+});
 canvas.addEventListener('touchmove', (e) => {
+    e.preventDefault();
     const touch = e.touches[0];
     draw(touch);
 });
@@ -50,10 +57,10 @@ function setDevice(device) {
     if (device === 'mobile') {
         canvas.width = window.innerWidth * 0.9;
         canvas.height = window.innerHeight * 0.6;
-        canvas.style.width = `${canvas.width}px`;
-        canvas.style.height = `${canvas.height}px`;
     } else {
         canvas.width = 800;
         canvas.height = 600;
     }
+    canvas.style.width = `${canvas.width}px`;
+    canvas.style.height = `${canvas.height}px`;
 }
