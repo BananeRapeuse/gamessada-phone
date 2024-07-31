@@ -55,8 +55,8 @@ function setDevice(device) {
     document.getElementById('deviceSelection').style.display = 'none';
     document.getElementById('game').style.display = 'flex';
     if (device === 'mobile') {
-        canvas.width = 600;
-        canvas.height = 600;
+        canvas.width = 220;
+        canvas.height = 220;
     } else {
         canvas.width = 1200;
         canvas.height = 1200;
