@@ -55,11 +55,11 @@ function setDevice(device) {
     document.getElementById('deviceSelection').style.display = 'none';
     document.getElementById('game').style.display = 'flex';
     if (device === 'mobile') {
-        canvas.width = 100;
-        canvas.height = 100;
+        canvas.width = 600;
+        canvas.height = 600;
     } else {
-        canvas.width = 1000;
-        canvas.height = 1000;
+        canvas.width = 1200;
+        canvas.height = 1200;
     }
     canvas.style.width = `${canvas.width}px`;
     canvas.style.height = `${canvas.height}px`;
