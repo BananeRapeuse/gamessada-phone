@@ -3,23 +3,41 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GAMESSADA PHONE</title>
+    <title>GAMESSADA</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h1>GAMESSADA PHONE</h1>
-    <div id="deviceSelection">
-        <button onclick="setDevice('computer')">Computer</button>
-        <button onclick="setDevice('mobile')">Mobile</button>
-    </div>
-    <div id="game" style="display:none;">
-        <canvas id="drawingCanvas"></canvas>
-        <div id="controls">
-            <button onclick="clearCanvas()">Effacer</button>
-            <button onclick="saveDrawing()">Sauvegarder</button>
+    <header>
+        <h1>GAMESSADA</h1>
+    </header>
+    <main>
+        <div class="controls">
+            <label for="resolution-select">Sélectionner la résolution :</label>
+            <select id="resolution-select">
+                <option value="720p">720p (1280x720)</option>
+                <option value="1080p">1080p (1920x1080)</option>
+                <option value="2K">HD/2K (2560x1440)</option>
+                <option value="4K">4K (3840x2160)</option>
+                <option value="8K">8K (7680x4320)</option>
+            </select>
+            
+            <label for="color-position-select">Sélectionner la position des couleurs :</label>
+            <select id="color-position-select">
+                <option value="haut">Haut</option>
+                <option value="bas">Bas</option>
+                <option value="gauche">Gauche</option>
+                <option value="droite">Droite</option>
+            </select>
+
+            <label for="tool-select">Sélectionner l'outil :</label>
+            <select id="tool-select">
+                <option value="seau">Seau</option>
+                <!-- Ajouter d'autres outils si nécessaire -->
+            </select>
         </div>
-        <div id="savedDrawings"></div>
-    </div>
+
+        <canvas id="canvas"></canvas>
+    </main>
     <script src="script.js"></script>
 </body>
 </html>
