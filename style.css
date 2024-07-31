@@ -9,6 +9,12 @@ body {
     background-color: #f0f0f0;
 }
 
+#logo {
+    max-width: 100%;
+    height: auto;
+    width: 720px; /* Limite la largeur à 720px */
+}
+
 #deviceSelection, #resolutionSelection, #game {
     margin-bottom: 20px;
 }
