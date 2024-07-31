@@ -1,7 +1,7 @@
-# gamessada-phone
+# GAMESSADA PHONE
 A « Gartic Phone » game for the french Youtuber « Gamessada »
 
-# Gamessada YouTube channel
+# Gamessada's YouTube channel
 
 https://youtube.com/@gamessada
 
@@ -21,4 +21,4 @@ in the futur a multiplayer mode can be added but not sure because I'm solo to de
 
 # Editing rules
 
-You can refere to the LISCENCE file or in the "BSL-1 LISCENCE" part above the readme
+You can refere to the LICENSE file or in the "BSL-1.0 LICENSE" part above the README.md
