@@ -23,16 +23,18 @@ function setResolution(width, height, deviceType) {
     document.getElementById('resolutionSelection').style.display = 'none';
     document.getElementById('game').style.display = 'block';
 
-    // Set the body size to match the device resolution
+    // Ajuster la taille de la page pour correspondre à la résolution de l'appareil
+    document.documentElement.style.width = width + 'px';
+    document.documentElement.style.height = height + 'px';
     document.body.style.width = width + 'px';
     document.body.style.height = height + 'px';
 
     var canvas = document.getElementById('drawingCanvas');
     
-    // Adjust canvas size slightly smaller than the page to accommodate buttons
+    // Ajuster la taille du canvas légèrement plus petite que la page pour laisser de l'espace pour les boutons
     if (deviceType === 'iPhone' || deviceType === 'iPad' || deviceType === 'iPod' || deviceType === 'other') {
-        canvas.width = width - 50;  // Slightly smaller than the body
-        canvas.height = height - 150; // Leave space for buttons
+        canvas.width = width - 50;  // Légèrement plus petit que la page
+        canvas.height = height - 150; // Laisser de l'espace pour les boutons
     } else {
         canvas.width = width - 200;
         canvas.height = height - 200;
@@ -56,29 +58,31 @@ function saveDrawing() {
     document.getElementById('savedDrawings').appendChild(img);
 }
 
-// Enable drawing functionality
+// Activer la fonctionnalité de dessin
 document.addEventListener("DOMContentLoaded", function() {
     var canvas = document.getElementById('drawingCanvas');
     var context = canvas.getContext('2d');
     var drawing = false;
 
-    canvas.addEventListener('mousedown', function(e) {
+    function startDrawing(e) {
         drawing = true;
+        context.beginPath();
         context.moveTo(e.offsetX, e.offsetY);
-    });
+    }
 
-    canvas.addEventListener('mousemove', function(e) {
-        if (drawing) {
-            context.lineTo(e.offsetX, e.offsetY);
-            context.stroke();
-        }
-    });
+    function draw(e) {
+        if (!drawing) return;
+        context.lineTo(e.offsetX, e.offsetY);
+        context.stroke();
+    }
 
-    canvas.addEventListener('mouseup', function() {
+    function stopDrawing() {
         drawing = false;
-    });
+        context.closePath();
+    }
 
-    canvas.addEventListener('mouseout', function() {
-        drawing = false;
-    });
+    canvas.addEventListener('mousedown', startDrawing);
+    canvas.addEventListener('mousemove', draw);
+    canvas.addEventListener('mouseup', stopDrawing);
+    canvas.addEventListener('mouseout', stopDrawing);
 });
