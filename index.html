@@ -5,6 +5,27 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GAMESSADA PHONE</title>
     <link rel="stylesheet" href="style.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+        #logo {
+            width: 100%;
+            max-width: 720px;
+            height: auto;
+        }
+        #gameModeSelection, #deviceSelection, #resolutionSelection, #multiplayerSetup, #game {
+            margin: 20px 0;
+        }
+        canvas {
+            border: 1px solid black;
+            margin-top: 20px;
+        }
+        button {
+            margin: 10px;
+        }
+    </style>
 </head>
 <body>
     <img id="logo" src="https://raw.githubusercontent.com/BananeRapeuse/gamessada-phone/main/IMG_2333.png" alt="GAMESSADA PHONE">
@@ -12,56 +33,229 @@
         <button onclick="selectGameMode('solo')">Solo</button>
         <button onclick="selectGameMode('multiplayer')">Multiplayer (Alpha NO-WORKING)</button>
     </div>
-    <div id="deviceSelection" style="display:none;">
-        <button onclick="selectDeviceType('computer')">Computer</button>
+    <div id="deviceSelection" style="display: none;">
         <button onclick="selectDeviceType('mobile')">Mobile</button>
+        <button onclick="selectDeviceType('computer')">Computer</button>
     </div>
-    <div id="resolutionSelection" style="display:none;">
-        <div id="computerOptions" style="display:none;">
+    <div id="resolutionSelection" style="display: none;">
+        <div id="computerOptions" style="display: none;">
             <button onclick="setResolution(1280, 720)">720p</button>
             <button onclick="setResolution(1920, 1080)">1080p</button>
             <button onclick="setResolution(2560, 1440)">2K</button>
             <button onclick="setResolution(3840, 2160)">4K</button>
             <button onclick="setResolution(7680, 4320)">8K</button>
         </div>
-        <div id="mobileOptions" style="display:none;">
+        <div id="mobileOptions" style="display: none;">
             <button onclick="selectMobileType('apple')">Apple</button>
             <button onclick="selectMobileType('other')">Autre</button>
         </div>
-        <div id="appleOptions" style="display:none;">
-            <button onclick="setResolution(750, 1334)">iPhone 6/6s/7/8</button>
+        <div id="appleOptions" style="display: none;">
+            <button onclick="setResolution(750, 1334)">iPhone 6/7/8</button>
             <button onclick="setResolution(828, 1792)">iPhone XR/11</button>
             <button onclick="setResolution(1125, 2436)">iPhone X/XS/11 Pro</button>
-            <button onclick="setResolution(1242, 2688)">iPhone XS Max/11 Pro Max</button>
             <button onclick="setResolution(1170, 2532)">iPhone 12/12 Pro</button>
-            <button onclick="setResolution(1284, 2778)">iPhone 12 Pro Max</button>
         </div>
-        <div id="otherMobileOptions" style="display:none;">
+        <div id="otherMobileOptions" style="display: none;">
             <button onclick="setResolution(720, 1280)">720p</button>
             <button onclick="setResolution(1080, 1920)">1080p</button>
         </div>
     </div>
-    <div id="multiplayerSetup" style="display:none;">
-        <div id="createRoom">
-            <input type="text" id="username" placeholder="Votre pseudo">
-            <input type="text" id="roomName" placeholder="Nom du salon">
-            <button onclick="createRoom()">Créer un salon</button>
-        </div>
-        <div id="joinRoom">
-            <h2>Salons disponibles</h2>
-            <div id="roomsList"></div>
-        </div>
+    <div id="multiplayerSetup" style="display: none;">
+        <input type="text" id="username" placeholder="Pseudo">
+        <input type="text" id="roomName" placeholder="Nom du salon">
+        <button onclick="createRoom()">Créer un salon</button>
+        <div id="roomsList"></div>
     </div>
-    <div id="game" style="display:none;">
+    <div id="game" style="display: none;">
         <canvas id="drawingCanvas"></canvas>
-        <div id="controls">
-            <button onclick="clearCanvas()">Effacer</button>
-            <button onclick="saveDrawing()">Sauvegarder</button>
-        </div>
+        <button onclick="clearCanvas()">Effacer</button>
+        <button onclick="saveDrawing()">Sauvegarder</button>
         <div id="savedDrawings"></div>
     </div>
-    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-database.js"></script>
-    <script src="script.js"></script>
+
+    <script type="module">
+        // Import the functions you need from the SDKs you need
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-analytics.js";
+        import { getDatabase, ref, set, onValue, push } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-database.js";
+
+        // Your web app's Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyD9yLaR3jVIwHTdjDqnkUSkf0BeNbNfF60",
+            authDomain: "gamessada-phone.firebaseapp.com",
+            projectId: "gamessada-phone",
+            storageBucket: "gamessada-phone.appspot.com",
+            messagingSenderId: "427341700711",
+            appId: "1:427341700711:web:6138e16b57b5f80b17fec2",
+            measurementId: "G-925J5K22HF"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
+        const db = getDatabase(app);
+
+        const canvas = document.getElementById('drawingCanvas');
+        const ctx = canvas.getContext('2d');
+        let drawing = false;
+
+        canvas.addEventListener('mousedown', () => drawing = true);
+        canvas.addEventListener('mouseup', () => {
+            drawing = false;
+            ctx.beginPath();
+        });
+        canvas.addEventListener('mousemove', draw);
+
+        canvas.addEventListener('touchstart', (e) => {
+            drawing = true;
+            const touch = e.touches[0];
+            ctx.moveTo(touch.clientX - canvas.offsetLeft, touch.clientY - canvas.offsetTop);
+        });
+        canvas.addEventListener('touchend', () => {
+            drawing = false;
+            ctx.beginPath();
+        });
+        canvas.addEventListener('touchmove', (e) => {
+            e.preventDefault();
+            const touch = e.touches[0];
+            draw(touch);
+        });
+
+        function draw(event) {
+            if (!drawing) return;
+            ctx.lineWidth = 5;
+            ctx.lineCap = 'round';
+            ctx.strokeStyle = '#000';
+
+            const x = event.clientX || event.touches[0].clientX;
+            const y = event.clientY || event.touches[0].clientY;
+
+            ctx.lineTo(x - canvas.offsetLeft, y - canvas.offsetTop);
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.moveTo(x - canvas.offsetLeft, y - canvas.offsetTop);
+        }
+
+        function clearCanvas() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+
+        function saveDrawing() {
+            const dataURL = canvas.toDataURL();
+            const img = document.createElement('img');
+            img.src = dataURL;
+            document.getElementById('savedDrawings').appendChild(img);
+            clearCanvas();
+        }
+
+        function selectGameMode(mode) {
+            document.getElementById('gameModeSelection').style.display = 'none';
+            if (mode === 'solo') {
+                document.getElementById('deviceSelection').style.display = 'block';
+            } else if (mode === 'multiplayer') {
+                document.getElementById('multiplayerSetup').style.display = 'block';
+                loadRooms();
+            }
+        }
+
+        function selectDeviceType(type) {
+            document.getElementById('deviceSelection').style.display = 'none';
+            document.getElementById('resolutionSelection').style.display = 'block';
+            if (type === 'computer') {
+                document.getElementById('computerOptions').style.display = 'block';
+                document.getElementById('mobileOptions').style.display = 'none';
+            } else {
+                document.getElementById('computerOptions').style.display = 'none';
+                document.getElementById('mobileOptions').style.display = 'block';
+            }
+        }
+
+        function selectMobileType(type) {
+            document.getElementById('mobileOptions').style.display = 'none';
+            if (type === 'apple') {
+                document.getElementById('appleOptions').style.display = 'block';
+            } else {
+                document.getElementById('otherMobileOptions').style.display = 'block';
+            }
+        }
+
+        function setResolution(width, height) {
+            document.getElementById('resolutionSelection').style.display = 'none';
+            canvas.width = width;
+            canvas.height = height;
+            document.getElementById('game').style.display = 'block';
+        }
+
+        function createRoom() {
+            const username = document.getElementById('username').value;
+            const roomName = document.getElementById('roomName').value;
+            if (username && roomName) {
+                const roomRef = ref(db, 'rooms');
+                const newRoomRef = push(roomRef);
+                set(newRoomRef, {
+                    name: roomName,
+                    users: {
+                        [newRoomRef.key]: username
+                    }
+                });
+                joinRoom(newRoomRef.key);
+            } else {
+                alert('Veuillez entrer un pseudo et un nom de salon.');
+            }
+        }
+
+        function loadRooms() {
+            const roomsList = document.getElementById('roomsList');
+            roomsList.innerHTML = '';
+            const roomsRef = ref(db, 'rooms');
+            onValue(roomsRef, (snapshot) => {
+                snapshot.forEach((roomSnapshot) => {
+                    const room = roomSnapshot.val
+                        function loadRooms() {
+            const roomsList = document.getElementById('roomsList');
+            roomsList.innerHTML = '';
+            const roomsRef = ref(db, 'rooms');
+            onValue(roomsRef, (snapshot) => {
+                snapshot.forEach((roomSnapshot) => {
+                    const room = roomSnapshot.val();
+                    const roomElement = document.createElement('div');
+                    roomElement.textContent = `${room.name} (${Object.keys(room.users).length} joueurs)`;
+                    const joinButton = document.createElement('button');
+                    joinButton.textContent = 'Join';
+                    joinButton.onclick = () => joinRoom(roomSnapshot.key);
+                    roomElement.appendChild(joinButton);
+                    roomsList.appendChild(roomElement);
+                });
+            });
+        }
+
+        function joinRoom(roomId) {
+            document.getElementById('multiplayerSetup').style.display = 'none';
+            const roomRef = ref(db, `rooms/${roomId}/users`);
+            const username = document.getElementById('username').value;
+            set(push(roomRef), username);
+            document.getElementById('game').style.display = 'block';
+            setupDrawingSync(roomId);
+        }
+
+        function setupDrawingSync(roomId) {
+            const drawRef = ref(db, `rooms/${roomId}/drawings`);
+            canvas.addEventListener('mouseup', () => {
+                const dataURL = canvas.toDataURL();
+                set(push(drawRef), dataURL);
+            });
+
+            onValue(drawRef, (snapshot) => {
+                snapshot.forEach((drawingSnapshot) => {
+                    const dataURL = drawingSnapshot.val();
+                    const img = new Image();
+                    img.src = dataURL;
+                    img.onload = () => {
+                        ctx.drawImage(img, 0, 0);
+                    };
+                });
+            });
+        }
+    </script>
 </body>
 </html>
