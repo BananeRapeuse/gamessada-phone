@@ -7,13 +7,12 @@ body {
     height: 100vh;
     margin: 0;
     background-color: #f0f0f0;
-    overflow: hidden;
 }
 
 #logo {
     max-width: 100%;
     height: auto;
-    width: 720px;
+    width: 720px; /* Limite la largeur à 720px */
 }
 
 #deviceSelection, #resolutionSelection, #game {
