@@ -1,139 +1,88 @@
-function selectDeviceType(deviceType) {
+const canvas = document.getElementById('drawingCanvas');
+const ctx = canvas.getContext('2d');
+let drawing = false;
+
+canvas.addEventListener('mousedown', () => drawing = true);
+canvas.addEventListener('mouseup', () => {
+    drawing = false;
+    ctx.beginPath();
+});
+canvas.addEventListener('mousemove', draw);
+
+canvas.addEventListener('touchstart', (e) => {
+    drawing = true;
+    const touch = e.touches[0];
+    ctx.moveTo(touch.clientX - canvas.offsetLeft, touch.clientY - canvas.offsetTop);
+});
+canvas.addEventListener('touchend', () => {
+    drawing = false;
+    ctx.beginPath();
+});
+canvas.addEventListener('touchmove', (e) => {
+    e.preventDefault();
+    const touch = e.touches[0];
+    draw(touch);
+});
+
+function draw(event) {
+    if (!drawing) return;
+    ctx.lineWidth = 5;
+    ctx.lineCap = 'round';
+    ctx.strokeStyle = '#000';
+
+    const x = event.clientX || event.touches[0].clientX;
+    const y = event.clientY || event.touches[0].clientY;
+
+    ctx.lineTo(x - canvas.offsetLeft, y - canvas.offsetTop);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(x - canvas.offsetLeft, y - canvas.offsetTop);
+}
+
+function clearCanvas() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+}
+
+function saveDrawing() {
+    const dataURL = canvas.toDataURL();
+    const img = document.createElement('img');
+    img.src = dataURL;
+    document.getElementById('savedDrawings').appendChild(img);
+    clearCanvas();
+}
+
+function selectDeviceType(type) {
     document.getElementById('deviceSelection').style.display = 'none';
     document.getElementById('resolutionSelection').style.display = 'block';
-    
-    if (deviceType === 'computer') {
+    if (type === 'computer') {
         document.getElementById('computerOptions').style.display = 'block';
-    } else if (deviceType === 'mobile') {
+        document.getElementById('mobileOptions').style.display = 'none';
+    } else {
+        document.getElementById('computerOptions').style.display = 'none';
         document.getElementById('mobileOptions').style.display = 'block';
     }
 }
 
-function selectMobileType(mobileType) {
+function selectMobileType(type) {
     document.getElementById('mobileOptions').style.display = 'none';
-    
-    if (mobileType === 'apple') {
+    if (type === 'apple') {
         document.getElementById('appleOptions').style.display = 'block';
-    } else if (mobileType === 'other') {
+        document.getElementById('otherMobileOptions').style.display = 'none';
+    } else {
+        document.getElementById('appleOptions').style.display = 'none';
         document.getElementById('otherMobileOptions').style.display = 'block';
     }
 }
 
-function setResolution(width, height, orientation) {
+function setResolution(width, height) {
     document.getElementById('resolutionSelection').style.display = 'none';
-    document.getElementById('game').style.display = 'block';
+    document.getElementById('game').style.display = 'flex';
 
-    if (orientation === 'portrait') {
-        document.documentElement.style.width = width + 'px';
-        document.documentElement.style.height = height + 'px';
-        document.body.style.width = width + 'px';
-        document.body.style.height = height + 'px';
-    } else {
-        document.documentElement.style.width = height + 'px';
-        document.documentElement.style.height = width + 'px';
-        document.body.style.width = height + 'px';
-        document.body.style.height = width + 'px';
-    }
+    document.body.style.width = `${width}px`;
+    document.body.style.height = `${height}px`;
 
-    var canvas = document.getElementById('drawingCanvas');
-    canvas.width = width - 20;
-    canvas.height = height - 150;  // Laisser de l'espace pour les boutons
-
-    var context = canvas.getContext('2d');
-    context.clearRect(0, 0, canvas.width, canvas.height);
+    canvas.width = width * 0.9;
+    canvas.height = height * 0.8;
+    canvas.style.width = `${canvas.width}px`;
+    canvas.style.height = `${canvas.height}px`;
 }
-
-function clearCanvas() {
-    var canvas = document.getElementById('drawingCanvas');
-    var context = canvas.getContext('2d');
-    context.clearRect(0, 0, canvas.width, canvas.height);
-}
-
-function saveDrawing() {
-    var canvas = document.getElementById('drawingCanvas');
-    var dataUrl = canvas.toDataURL();
-    var img = document.createElement('img');
-    img.src = dataUrl;
-    document.getElementById('savedDrawings').appendChild(img);
-}
-
-// Activer la fonctionnalité de dessin
-document.addEventListener("DOMContentLoaded", function() {
-    var canvas = document.getElementById('drawingCanvas');
-    var context = canvas.getContext('2d');
-    var drawing = false;
-
-    function startDrawing(e) {
-        drawing = true;
-        context.beginPath();
-        context.moveTo(e.offsetX, e.offsetY);
-    }
-
-    function draw(e) {
-        if (!drawing) return;
-        context.lineTo(e.offsetX, e.offsetY);
-        context.stroke();
-    }
-
-    function stopDrawing() {
-        drawing = false;
-        context.closePath();
-    }
-
-    canvas.addEventListener('mousedown', startDrawing);
-    canvas.addEventListener('mousemove', draw);
-    canvas.addEventListener('mouseup', stopDrawing);
-    canvas.addEventListener('mouseout', stopDrawing);
-
-    // Ajouter des événements tactiles pour les appareils mobiles
-    canvas.addEventListener('touchstart', function(e) {
-        var touch = e.touches[0];
-        var mouseEvent = new MouseEvent('mousedown', {
-            clientX: touch.clientX,
-            clientY: touch.clientY
-        });
-        canvas.dispatchEvent(mouseEvent);
-    });
-
-    canvas.addEventListener('touchmove', function(e) {
-        var touch = e.touches[0];
-        var mouseEvent = new MouseEvent('mousemove', {
-            clientX: touch.clientX,
-            clientY: touch.clientY
-        });
-        canvas.dispatchEvent(mouseEvent);
-    });
-
-    canvas.addEventListener('touchend', function(e) {
-        var mouseEvent = new MouseEvent('mouseup', {});
-        canvas.dispatchEvent(mouseEvent);
-    });
-    
-    // Continuation from the previous script
-
-    canvas.addEventListener('touchcancel', function(e) {
-        var mouseEvent = new MouseEvent('mouseup', {});
-        canvas.dispatchEvent(mouseEvent);
-    });
-
-    // Prevent scrolling when touching the canvas
-    canvas.addEventListener('touchstart', function(e) {
-        if (e.target == canvas) {
-            e.preventDefault();
-        }
-    }, false);
-
-    canvas.addEventListener('touchend', function(e) {
-        if (e.target == canvas) {
-            e.preventDefault();
-        }
-    }, false);
-
-    canvas.addEventListener('touchmove', function(e) {
-        if (e.target == canvas) {
-            e.preventDefault();
-        }
-    }, false);
-});
-
-   
