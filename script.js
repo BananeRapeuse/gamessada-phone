@@ -1,13 +1,9 @@
-<script type="module">
-  // Import the functions you need from the SDKs you need
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js";
-  import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-analytics.js";
-  // TODO: Add SDKs for Firebase products that you want to use
-  // https://firebase.google.com/docs/web/setup#available-libraries
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js";
+import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-analytics.js";
+import { getDatabase, ref, set, onValue, push } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-database.js";
 
-  // Your web app's Firebase configuration
-  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
-  const firebaseConfig = {
+// Votre configuration Firebase
+const firebaseConfig = {
     apiKey: "AIzaSyD9yLaR3jVIwHTdjDqnkUSkf0BeNbNfF60",
     authDomain: "gamessada-phone.firebaseapp.com",
     projectId: "gamessada-phone",
@@ -15,12 +11,13 @@
     messagingSenderId: "427341700711",
     appId: "1:427341700711:web:6138e16b57b5f80b17fec2",
     measurementId: "G-925J5K22HF"
-  };
+};
 
-  // Initialize Firebase
-  const app = initializeApp(firebaseConfig);
-  const analytics = getAnalytics(app);
-</script>
+// Initialiser Firebase
+const app = initializeApp(firebaseConfig);
+const analytics = getAnalytics(app);
+const db = getDatabase(app);
+
 const canvas = document.getElementById('drawingCanvas');
 const ctx = canvas.getContext('2d');
 let drawing = false;
@@ -116,14 +113,15 @@ function createRoom() {
     const username = document.getElementById('username').value;
     const roomName = document.getElementById('roomName').value;
     if (username && roomName) {
-        const roomRef = db.ref('rooms').push();
-        roomRef.set({
+        const roomRef = ref(db, 'rooms');
+        const newRoomRef = push(roomRef);
+        set(newRoomRef, {
             name: roomName,
             users: {
-                [roomRef.key]: username
+                [newRoomRef.key]: username
             }
         });
-        joinRoom(roomRef.key);
+        joinRoom(newRoomRef.key);
     } else {
         alert('Veuillez entrer un pseudo et un nom de salon.');
     }
@@ -132,7 +130,8 @@ function createRoom() {
 function loadRooms() {
     const roomsList = document.getElementById('roomsList');
     roomsList.innerHTML = '';
-    db.ref('rooms').on('value', (snapshot) => {
+    const roomsRef = ref(db, 'rooms');
+    onValue(roomsRef, (snapshot) => {
         snapshot.forEach((roomSnapshot) => {
             const room = roomSnapshot.val();
             const roomElement = document.createElement('div');
@@ -147,37 +146,29 @@ function loadRooms() {
 }
 
 function joinRoom(roomId) {
+    document.getElementById('multiplayerSetup').style.display = 'none';
+    const roomRef = ref(db, `rooms/${roomId}/users`);
     const username = document.getElementById('username').value;
-    if (username) {
-        const userRef = db.ref(`rooms/${roomId}/users`).push();
-        userRef.set(username);
-        document.getElementById('multiplayerSetup').style.display = 'none';
-        document.getElementById('game').style.display = 'block';
-        initMultiplayerCanvas(roomId);
-    } else {
-        alert('Veuillez entrer un pseudo.');
-    }
+    set(push(roomRef), username);
+    document.getElementById('game').style.display = 'block';
+    setupDrawingSync(roomId);
 }
 
-function initMultiplayerCanvas(roomId) {
-    // Écouter les événements de dessin des autres utilisateurs
-    db.ref(`rooms/${roomId}/drawing`).on('child_added', (snapshot) => {
-        const line = snapshot.val();
-        drawLine(line.start, line.end);
+function setupDrawingSync(roomId) {
+    const drawRef = ref(db, `rooms/${roomId}/drawings`);
+    canvas.addEventListener('mouseup', () => {
+        const dataURL = canvas.toDataURL();
+        set(push(drawRef), dataURL);
     });
 
-    // Enregistrer les événements de dessin localement
-    canvas.addEventListener('mousemove', (event) => {
-        if (!drawing) return;
-        const start = { x: event.offsetX, y: event.offsetY };
-        const end = { x: event.offsetX + 1, y: event.offsetY + 1 };
-        db.ref(`rooms/${roomId}/drawing`).push({ start, end });
+    onValue(drawRef, (snapshot) => {
+        snapshot.forEach((drawingSnapshot) => {
+            const dataURL = drawingSnapshot.val();
+            const img = new Image();
+            img.src = dataURL;
+            img.onload = () => {
+                ctx.drawImage(img, 0, 0);
+            };
+        });
     });
-}
-
-function drawLine(start, end) {
-    ctx.beginPath();
-    ctx.moveTo(start.x, start.y);
-    ctx.lineTo(end.x, end.y);
-    ctx.stroke();
 }
