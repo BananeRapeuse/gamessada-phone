@@ -19,19 +19,27 @@ function selectMobileType(mobileType) {
     }
 }
 
-function setResolution(width, height) {
+function setResolution(width, height, deviceType) {
     document.getElementById('resolutionSelection').style.display = 'none';
     document.getElementById('game').style.display = 'block';
 
+    // Set the body size to match the device resolution
     document.body.style.width = width + 'px';
     document.body.style.height = height + 'px';
 
     var canvas = document.getElementById('drawingCanvas');
-    canvas.width = width;
-    canvas.height = height;
+    
+    // Adjust canvas size slightly smaller than the page to accommodate buttons
+    if (deviceType === 'iPhone' || deviceType === 'iPad' || deviceType === 'iPod' || deviceType === 'other') {
+        canvas.width = width - 50;  // Slightly smaller than the body
+        canvas.height = height - 150; // Leave space for buttons
+    } else {
+        canvas.width = width - 200;
+        canvas.height = height - 200;
+    }
 
     var context = canvas.getContext('2d');
-    context.clearRect(0, 0, width, height);
+    context.clearRect(0, 0, canvas.width, canvas.height);
 }
 
 function clearCanvas() {
@@ -47,3 +55,30 @@ function saveDrawing() {
     img.src = dataUrl;
     document.getElementById('savedDrawings').appendChild(img);
 }
+
+// Enable drawing functionality
+document.addEventListener("DOMContentLoaded", function() {
+    var canvas = document.getElementById('drawingCanvas');
+    var context = canvas.getContext('2d');
+    var drawing = false;
+
+    canvas.addEventListener('mousedown', function(e) {
+        drawing = true;
+        context.moveTo(e.offsetX, e.offsetY);
+    });
+
+    canvas.addEventListener('mousemove', function(e) {
+        if (drawing) {
+            context.lineTo(e.offsetX, e.offsetY);
+            context.stroke();
+        }
+    });
+
+    canvas.addEventListener('mouseup', function() {
+        drawing = false;
+    });
+
+    canvas.addEventListener('mouseout', function() {
+        drawing = false;
+    });
+});
