@@ -19,26 +19,25 @@ function selectMobileType(mobileType) {
     }
 }
 
-function setResolution(width, height, deviceType) {
+function setResolution(width, height, orientation) {
     document.getElementById('resolutionSelection').style.display = 'none';
     document.getElementById('game').style.display = 'block';
 
-    // Ajuster la taille de la page pour correspondre à la résolution de l'appareil
-    document.documentElement.style.width = width + 'px';
-    document.documentElement.style.height = height + 'px';
-    document.body.style.width = width + 'px';
-    document.body.style.height = height + 'px';
+    if (orientation === 'portrait') {
+        document.documentElement.style.width = width + 'px';
+        document.documentElement.style.height = height + 'px';
+        document.body.style.width = width + 'px';
+        document.body.style.height = height + 'px';
+    } else {
+        document.documentElement.style.width = height + 'px';
+        document.documentElement.style.height = width + 'px';
+        document.body.style.width = height + 'px';
+        document.body.style.height = width + 'px';
+    }
 
     var canvas = document.getElementById('drawingCanvas');
-    
-    // Ajuster la taille du canvas légèrement plus petite que la page pour laisser de l'espace pour les boutons
-    if (deviceType === 'iPhone' || deviceType === 'iPad' || deviceType === 'iPod' || deviceType === 'other') {
-        canvas.width = width - 50;  // Légèrement plus petit que la page
-        canvas.height = height - 150; // Laisser de l'espace pour les boutons
-    } else {
-        canvas.width = width - 200;
-        canvas.height = height - 200;
-    }
+    canvas.width = width - 20;
+    canvas.height = height - 150;  // Laisser de l'espace pour les boutons
 
     var context = canvas.getContext('2d');
     context.clearRect(0, 0, canvas.width, canvas.height);
@@ -85,4 +84,56 @@ document.addEventListener("DOMContentLoaded", function() {
     canvas.addEventListener('mousemove', draw);
     canvas.addEventListener('mouseup', stopDrawing);
     canvas.addEventListener('mouseout', stopDrawing);
+
+    // Ajouter des événements tactiles pour les appareils mobiles
+    canvas.addEventListener('touchstart', function(e) {
+        var touch = e.touches[0];
+        var mouseEvent = new MouseEvent('mousedown', {
+            clientX: touch.clientX,
+            clientY: touch.clientY
+        });
+        canvas.dispatchEvent(mouseEvent);
+    });
+
+    canvas.addEventListener('touchmove', function(e) {
+        var touch = e.touches[0];
+        var mouseEvent = new MouseEvent('mousemove', {
+            clientX: touch.clientX,
+            clientY: touch.clientY
+        });
+        canvas.dispatchEvent(mouseEvent);
+    });
+
+    canvas.addEventListener('touchend', function(e) {
+        var mouseEvent = new MouseEvent('mouseup', {});
+        canvas.dispatchEvent(mouseEvent);
+    });
+    
+    // Continuation from the previous script
+
+    canvas.addEventListener('touchcancel', function(e) {
+        var mouseEvent = new MouseEvent('mouseup', {});
+        canvas.dispatchEvent(mouseEvent);
+    });
+
+    // Prevent scrolling when touching the canvas
+    canvas.addEventListener('touchstart', function(e) {
+        if (e.target == canvas) {
+            e.preventDefault();
+        }
+    }, false);
+
+    canvas.addEventListener('touchend', function(e) {
+        if (e.target == canvas) {
+            e.preventDefault();
+        }
+    }, false);
+
+    canvas.addEventListener('touchmove', function(e) {
+        if (e.target == canvas) {
+            e.preventDefault();
+        }
+    }, false);
 });
+
+   
