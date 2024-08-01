@@ -1,23 +1,3 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js";
-import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-analytics.js";
-import { getDatabase, ref, set, onValue, push } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-database.js";
-
-// Votre configuration Firebase
-const firebaseConfig = {
-    apiKey: "AIzaSyD9yLaR3jVIwHTdjDqnkUSkf0BeNbNfF60",
-    authDomain: "gamessada-phone.firebaseapp.com",
-    projectId: "gamessada-phone",
-    storageBucket: "gamessada-phone.appspot.com",
-    messagingSenderId: "427341700711",
-    appId: "1:427341700711:web:6138e16b57b5f80b17fec2",
-    measurementId: "G-925J5K22HF"
-};
-
-// Initialiser Firebase
-const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
-const db = getDatabase(app);
-
 const canvas = document.getElementById('drawingCanvas');
 const ctx = canvas.getContext('2d');
 let drawing = false;
@@ -71,16 +51,6 @@ function saveDrawing() {
     clearCanvas();
 }
 
-function selectGameMode(mode) {
-    document.getElementById('gameModeSelection').style.display = 'none';
-    if (mode === 'solo') {
-        document.getElementById('deviceSelection').style.display = 'block';
-    } else if (mode === 'multiplayer') {
-        document.getElementById('multiplayerSetup').style.display = 'block';
-        loadRooms();
-    }
-}
-
 function selectDeviceType(type) {
     document.getElementById('deviceSelection').style.display = 'none';
     document.getElementById('resolutionSelection').style.display = 'block';
@@ -97,78 +67,22 @@ function selectMobileType(type) {
     document.getElementById('mobileOptions').style.display = 'none';
     if (type === 'apple') {
         document.getElementById('appleOptions').style.display = 'block';
+        document.getElementById('otherMobileOptions').style.display = 'none';
     } else {
+        document.getElementById('appleOptions').style.display = 'none';
         document.getElementById('otherMobileOptions').style.display = 'block';
     }
 }
 
 function setResolution(width, height) {
     document.getElementById('resolutionSelection').style.display = 'none';
-    canvas.width = width;
-    canvas.height = height;
-    document.getElementById('game').style.display = 'block';
-}
+    document.getElementById('game').style.display = 'flex';
 
-function createRoom() {
-    const username = document.getElementById('username').value;
-    const roomName = document.getElementById('roomName').value;
-    if (username && roomName) {
-        const roomRef = ref(db, 'rooms');
-        const newRoomRef = push(roomRef);
-        set(newRoomRef, {
-            name: roomName,
-            users: {
-                [newRoomRef.key]: username
-            }
-        });
-        joinRoom(newRoomRef.key);
-    } else {
-        alert('Veuillez entrer un pseudo et un nom de salon.');
-    }
-}
+    document.body.style.width = `${width}px`;
+    document.body.style.height = `${height}px`;
 
-function loadRooms() {
-    const roomsList = document.getElementById('roomsList');
-    roomsList.innerHTML = '';
-    const roomsRef = ref(db, 'rooms');
-    onValue(roomsRef, (snapshot) => {
-        snapshot.forEach((roomSnapshot) => {
-            const room = roomSnapshot.val();
-            const roomElement = document.createElement('div');
-            roomElement.textContent = `${room.name} (${Object.keys(room.users).length} joueurs)`;
-            const joinButton = document.createElement('button');
-            joinButton.textContent = 'Join';
-            joinButton.onclick = () => joinRoom(roomSnapshot.key);
-            roomElement.appendChild(joinButton);
-            roomsList.appendChild(roomElement);
-        });
-    });
-}
-
-function joinRoom(roomId) {
-    document.getElementById('multiplayerSetup').style.display = 'none';
-    const roomRef = ref(db, `rooms/${roomId}/users`);
-    const username = document.getElementById('username').value;
-    set(push(roomRef), username);
-    document.getElementById('game').style.display = 'block';
-    setupDrawingSync(roomId);
-}
-
-function setupDrawingSync(roomId) {
-    const drawRef = ref(db, `rooms/${roomId}/drawings`);
-    canvas.addEventListener('mouseup', () => {
-        const dataURL = canvas.toDataURL();
-        set(push(drawRef), dataURL);
-    });
-
-    onValue(drawRef, (snapshot) => {
-        snapshot.forEach((drawingSnapshot) => {
-            const dataURL = drawingSnapshot.val();
-            const img = new Image();
-            img.src = dataURL;
-            img.onload = () => {
-                ctx.drawImage(img, 0, 0);
-            };
-        });
-    });
+    canvas.width = width * 0.9;
+    canvas.height = height * 0.8;
+    canvas.style.width = `${canvas.width}px`;
+    canvas.style.height = `${canvas.height}px`;
 }
