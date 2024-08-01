@@ -12,7 +12,7 @@ The game have an integred resolution adaptater for your Computer or Mobile phone
 
 # Build
 
-The game dosn't need build, if you want to fork the game to modify it, you **must** upload it on your website or github pages
+The game dosn't need build, if you want to fork the game to modify it, you **must** upload the code on your personal website or github pages
 
 # Multiplayer
 
@@ -21,4 +21,4 @@ in the futur a multiplayer mode can be added but not sure because I'm solo to de
 
 # Editing rules
 
-You can refere to the LICENSE file or in the "BSL-1.0 LICENSE" part above the README.md
+You can refere to the LICENSE file or in the "BSL-1.0 license" part above the README.md
