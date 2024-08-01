@@ -8,7 +8,11 @@
 </head>
 <body>
     <img id="logo" src="https://raw.githubusercontent.com/BananeRapeuse/gamessada-phone/main/IMG_2333.png" alt="GAMESSADA PHONE">
-    <div id="deviceSelection">
+    <div id="gameModeSelection">
+        <button onclick="selectGameMode('solo')">Solo</button>
+        <button onclick="selectGameMode('multiplayer')">Multiplayer (Alpha NO-WORKING)</button>
+    </div>
+    <div id="deviceSelection" style="display:none;">
         <button onclick="selectDeviceType('computer')">Computer</button>
         <button onclick="selectDeviceType('mobile')">Mobile</button>
     </div>
@@ -37,6 +41,17 @@
             <button onclick="setResolution(1080, 1920)">1080p</button>
         </div>
     </div>
+    <div id="multiplayerSetup" style="display:none;">
+        <div id="createRoom">
+            <input type="text" id="username" placeholder="Votre pseudo">
+            <input type="text" id="roomName" placeholder="Nom du salon">
+            <button onclick="createRoom()">Créer un salon</button>
+        </div>
+        <div id="joinRoom">
+            <h2>Salons disponibles</h2>
+            <div id="roomsList"></div>
+        </div>
+    </div>
     <div id="game" style="display:none;">
         <canvas id="drawingCanvas"></canvas>
         <div id="controls">
@@ -45,6 +60,8 @@
         </div>
         <div id="savedDrawings"></div>
     </div>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-database.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
