@@ -211,7 +211,7 @@
             onValue(roomsRef, (snapshot) => {
                 snapshot.forEach((roomSnapshot) => {
                     const room = roomSnapshot.val
-                        function loadRooms() {
+                            function loadRooms() {
             const roomsList = document.getElementById('roomsList');
             roomsList.innerHTML = '';
             const roomsRef = ref(db, 'rooms');
