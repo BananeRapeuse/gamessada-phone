@@ -9,68 +9,33 @@ body {
     background-color: #f0f0f0;
 }
 
-h1 {
-    margin: 20px 0;
+#logo {
+    max-width: 100%;
+    height: auto;
+    width: 720px; /* Limite la largeur à 720px */
 }
 
-canvas {
-    border: 1px solid #000;
+#deviceSelection, #resolutionSelection, #game {
     margin-bottom: 20px;
 }
 
-button {
-    padding: 10px 20px;
-    margin: 10px;
-    border: none;
-    background-color: #007BFF;
-    color: white;
-    cursor: pointer;
-    font-size: 16px;
-    border-radius: 5px;
-}
-
-button:hover {
-    background-color: #0056b3;
-}
-
-#savedDrawings img {
-    width: 100px;
-    height: auto;
-    margin: 5px;
-    border: 1px solid #000;
-}
-
-#gameModeSelection, #deviceSelection, #resolutionSelection, #multiplayerSetup, #game {
-    display: none;
+#game {
+    display: flex;
     flex-direction: column;
     align-items: center;
 }
 
-#roomsList div {
+canvas {
+    border: 1px solid #000;
+    margin-bottom: 10px;
+}
+
+#controls {
+    margin-bottom: 20px;
+}
+
+#savedDrawings {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 300px;
-    margin: 5px 0;
-    padding: 10px;
-    background-color: #fff;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-}
-
-#roomsList button {
-    background-color: #28a745;
-}
-
-#roomsList button:hover {
-    background-color: #218838;
-}
-
-input[type="text"] {
-    padding: 10px;
-    margin: 10px 0;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    font-size: 16px;
-    width: 200px;
+    flex-wrap: wrap;
+    gap: 10px;
 }
