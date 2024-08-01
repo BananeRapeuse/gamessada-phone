@@ -15,7 +15,7 @@ body {
     width: 720px; /* Limite la largeur à 720px */
 }
 
-#deviceSelection, #resolutionSelection, #game {
+#gameModeSelection, #deviceSelection, #resolutionSelection, #multiplayerSetup, #game {
     margin-bottom: 20px;
 }
 
@@ -37,5 +37,17 @@ canvas {
 #savedDrawings {
     display: flex;
     flex-wrap: wrap;
+    gap: 10px;
+}
+
+#multiplayerSetup {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#roomsList {
+    display: flex;
+    flex-direction: column;
     gap: 10px;
 }
