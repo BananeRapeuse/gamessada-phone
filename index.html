@@ -14,11 +14,11 @@
     </div>
     <div id="resolutionSelection" style="display:none;">
         <div id="computerOptions" style="display:none;">
-            <button onclick="setResolution(1280, 720)">720p</button>
-            <button onclick="setResolution(1920, 1080)">1080p</button>
-            <button onclick="setResolution(2560, 1440)">2K</button>
-            <button onclick="setResolution(3840, 2160)">4K</button>
-            <button onclick="setResolution(7680, 4320)">8K</button>
+            <button onclick="setResolution(1280, 720, 'landscape')">720p</button>
+            <button onclick="setResolution(1920, 1080, 'landscape')">1080p</button>
+            <button onclick="setResolution(2560, 1440, 'landscape')">2K</button>
+            <button onclick="setResolution(3840, 2160, 'landscape')">4K</button>
+            <button onclick="setResolution(7680, 4320, 'landscape')">8K</button>
         </div>
         <div id="mobileOptions" style="display:none;">
             <button onclick="selectMobileType('apple')">Apple</button>
@@ -26,24 +26,24 @@
         </div>
         <div id="appleOptions" style="display:none;">
             <!-- iPhones -->
-            <button onclick="setResolution(750, 1334, 'iPhone')">iPhone 6/6s/7/8</button>
-            <button onclick="setResolution(828, 1792, 'iPhone')">iPhone XR/11</button>
-            <button onclick="setResolution(1125, 2436, 'iPhone')">iPhone X/XS/11 Pro</button>
-            <button onclick="setResolution(1242, 2688, 'iPhone')">iPhone XS Max/11 Pro Max</button>
-            <button onclick="setResolution(1170, 2532, 'iPhone')">iPhone 12/12 Pro</button>
-            <button onclick="setResolution(1284, 2778, 'iPhone')">iPhone 12 Pro Max</button>
+            <button onclick="setResolution(750, 1334, 'portrait')">iPhone 6/6s/7/8</button>
+            <button onclick="setResolution(828, 1792, 'portrait')">iPhone XR/11</button>
+            <button onclick="setResolution(1125, 2436, 'portrait')">iPhone X/XS/11 Pro</button>
+            <button onclick="setResolution(1242, 2688, 'portrait')">iPhone XS Max/11 Pro Max</button>
+            <button onclick="setResolution(1170, 2532, 'portrait')">iPhone 12/12 Pro</button>
+            <button onclick="setResolution(1284, 2778, 'portrait')">iPhone 12 Pro Max</button>
             <!-- iPads -->
-            <button onclick="setResolution(2048, 2732, 'iPad')">iPad Pro 12.9" (2015+)</button>
-            <button onclick="setResolution(1668, 2388, 'iPad')">iPad Pro 11" (2018+)</button>
-            <button onclick="setResolution(1668, 2224, 'iPad')">iPad Pro 10.5" (2017)</button>
-            <button onclick="setResolution(1536, 2048, 'iPad')">iPad Mini 4/5, iPad Air 2, iPad 5th/6th Gen</button>
-            <button onclick="setResolution(1620, 2160, 'iPad')">iPad Air (2019+)</button>
+            <button onclick="setResolution(2048, 2732, 'portrait')">iPad Pro 12.9" (2015+)</button>
+            <button onclick="setResolution(1668, 2388, 'portrait')">iPad Pro 11" (2018+)</button>
+            <button onclick="setResolution(1668, 2224, 'portrait')">iPad Pro 10.5" (2017)</button>
+            <button onclick="setResolution(1536, 2048, 'portrait')">iPad Mini 4/5, iPad Air 2, iPad 5th/6th Gen</button>
+            <button onclick="setResolution(1620, 2160, 'portrait')">iPad Air (2019+)</button>
             <!-- iPods -->
-            <button onclick="setResolution(640, 1136, 'iPod')">iPod Touch 5/6/7</button>
+            <button onclick="setResolution(640, 1136, 'portrait')">iPod Touch 5/6/7</button>
         </div>
         <div id="otherMobileOptions" style="display:none;">
-            <button onclick="setResolution(720, 1280, 'other')">720p</button>
-            <button onclick="setResolution(1080, 1920, 'other')">1080p</button>
+            <button onclick="setResolution(720, 1280, 'portrait')">720p</button>
+            <button onclick="setResolution(1080, 1920, 'portrait')">1080p</button>
         </div>
     </div>
     <div id="game" style="display:none;">
