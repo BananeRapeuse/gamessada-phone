@@ -1,21 +1,50 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="style.css">
     <title>GAMESSADA PHONE</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <header>
-        <div class="logo">
-            <img src="logo.png" alt="GAMESSADA PHONE Logo">
-            <div class="version-number">Version (Alpha) 0.0.1</div> <!-- Ajout de cette ligne -->
+    <img id="logo" src="https://raw.githubusercontent.com/BananeRapeuse/gamessada-phone/main/IMG_2333.png" alt="GAMESSADA PHONE">
+    <div id="deviceSelection">
+        <button onclick="selectDeviceType('computer')">Computer</button>
+        <button onclick="selectDeviceType('mobile')">Mobile</button>
+    </div>
+    <div id="resolutionSelection" style="display:none;">
+        <div id="computerOptions" style="display:none;">
+            <button onclick="setResolution(1280, 720)">720p</button>
+            <button onclick="setResolution(1920, 1080)">1080p</button>
+            <button onclick="setResolution(2560, 1440)">2K</button>
+            <button onclick="setResolution(3840, 2160)">4K</button>
+            <button onclick="setResolution(7680, 4320)">8K</button>
         </div>
-    </header>
-    <main>
-        <!-- Contenu principal du jeu -->
-    </main>
+        <div id="mobileOptions" style="display:none;">
+            <button onclick="selectMobileType('apple')">Apple</button>
+            <button onclick="selectMobileType('other')">Autre</button>
+        </div>
+        <div id="appleOptions" style="display:none;">
+            <button onclick="setResolution(750, 1334)">iPhone 6/6s/7/8</button>
+            <button onclick="setResolution(828, 1792)">iPhone XR/11</button>
+            <button onclick="setResolution(1125, 2436)">iPhone X/XS/11 Pro</button>
+            <button onclick="setResolution(1242, 2688)">iPhone XS Max/11 Pro Max</button>
+            <button onclick="setResolution(1170, 2532)">iPhone 12/12 Pro</button>
+            <button onclick="setResolution(1284, 2778)">iPhone 12 Pro Max</button>
+        </div>
+        <div id="otherMobileOptions" style="display:none;">
+            <button onclick="setResolution(720, 1280)">720p</button>
+            <button onclick="setResolution(1080, 1920)">1080p</button>
+        </div>
+    </div>
+    <div id="game" style="display:none;">
+        <canvas id="drawingCanvas"></canvas>
+        <div id="controls">
+            <button onclick="clearCanvas()">Effacer</button>
+            <button onclick="saveDrawing()">Sauvegarder</button>
+        </div>
+        <div id="savedDrawings"></div>
+    </div>
     <script src="script.js"></script>
 </body>
 </html>
